@@ -7,7 +7,6 @@
     require_once __DIR__."/../src/Patron.php";
     require_once __DIR__."/../src/Token.php";
 
-
     $app = New Silex\Application();
     $app['debug'] = true;
 
@@ -17,40 +16,66 @@
 
     $DB = new PDO($server, $username, $password);
 
-
     //Twig Path
     $app->register(new Silex\Provider\TwigServiceProvider(), array(
         'twig.path'=>__DIR__."/../views"
-));
+    ));
 
     use Symfony\Component\HttpFoundation\Request;
     Request::enableHttpMethodParameterOverride();
 
     //Get Calls ==================================================
-        $app->get("/", function() use($app) {
+    $app->get("/", function() use($app) {
 
-            return $app['twig']->render("index.html.twig", array('about' => false, 'sign_up' => false, "sign_in" => false, 'team' => false));
-        });
+        return $app['twig']->render("index.html.twig", array(
+            'about' => false,
+            'sign_up' => false,
+            'sign_in' => false,
+            'team' => false
+        ));
+    });
 
-        $app->get("/signup", function() use($app) {
+    $app->get("/signup", function() use($app) {
 
-            return $app['twig']->render("index.html.twig", array('about' => false, 'sign_up' => true, "sign_in" => false, 'team' => false, 'customer_signup' => false, 'business_signup' => false));
-        });
+        return $app['twig']->render("index.html.twig", array(
+            'about' => false,
+            'sign_up' => true,
+            'sign_in' => false,
+            'team' => false,
+            'customer_signup' => false,
+            'business_signup' => false
+        ));
+    });
 
-        $app->get("/signin", function() use($app) {
+    $app->get("/signin", function() use($app) {
 
-            return $app['twig']->render("index.html.twig", array('about' => false, 'sign_up' => false, "sign_in" => true, 'team' => false));
-        });
+        return $app['twig']->render("index.html.twig", array(
+            'about' => false, 
+            'sign_up' => false, 
+            'sign_in' => true, 
+            'team' => false
+        ));
+    });
 
-        $app->get("/about", function() use($app) {
+    $app->get("/about", function() use($app) {
 
-            return $app['twig']->render("index.html.twig", array('about' => true, 'sign_up' => false, "sign_in" => false, 'team' => false));
-        });
+        return $app['twig']->render("index.html.twig", array(
+            'about' => true, 
+            'sign_up' => false, 
+            'sign_in' => false, 
+            'team' => false
+        ));
+    });
 
-        $app->get("/team", function() use($app) {
+    $app->get("/team", function() use($app) {
 
-            return $app['twig']->render("index.html.twig", array('about' => false, 'sign_up' => false, "sign_in" => false, 'team' => true));
-        });
+        return $app['twig']->render("index.html.twig", array(
+            'about' => false, 
+            'sign_up' => false, 
+            'sign_in' => false, 
+            'team' => true
+        ));
+    });
 
 
     //Get Login Call
@@ -63,7 +88,12 @@
 
         if ($bar == NULL && $user == NULL) {
 
-            return $app['twig']->render("index.html.twig", array('about' => false, 'sign_up' => false, "sign_in" => false, 'team' => false));
+            return $app['twig']->render("index.html.twig", array(
+                'about' => false, 
+                'sign_up' => false, 
+                'sign_in' => false, 
+                'team' => false
+            ));
 
         } elseif($bar == NULL) {
 
@@ -93,14 +123,22 @@
     //Sign Up Routes:
 
     $app->get("/show_customer_signup", function() use($app) {
-        return $app['twig']->render('index.html.twig', array('about' => false, 'sign_up' => true, "sign_in" => false, 'team' => false,
+        return $app['twig']->render('index.html.twig', array(
+            'about' => false, 
+            'sign_up' => true, 
+            'sign_in' => false, 
+            'team' => false,
             'customer_signup' => true,
             'business_signup' => false
         ));
     });
 
     $app->get("/show_business_signup", function() use($app) {
-        return $app['twig']->render('index.html.twig', array('about' => false, 'sign_up' => true, "sign_in" => false, 'team' => false,
+        return $app['twig']->render('index.html.twig', array(
+            'about' => false, 
+            'sign_up' => true, 
+            'sign_in' => false, 
+            'team' => false,
             'customer_signup' => false,
             'business_signup' => true
         ));
@@ -134,7 +172,7 @@
             'send_token' => true,
             'token_form' => false,
             'edit_user' => false
-            ));
+        ));
     });
 
     //Get Show User Tokens
@@ -145,12 +183,11 @@
         return $app['twig']->render("patron.html.twig", array(
             'user' => $user,
             'user_tokens' => $tokens,
-            // 'all_bars' => $all_bars,
             'preferred_bars' => false,
             'send_token' => false,
             'token_form' => true,
             'edit_user' => false
-            ));
+        ));
     });
 
     //Get Show User edit
@@ -166,7 +203,7 @@
             'send_token' => false,
             'token_form' => false,
             'edit_user' => true
-            ));
+        ));
     });
 
     //Get Show preferred bars
@@ -182,7 +219,7 @@
             'send_token' => false,
             'token_form' => false,
             'edit_user' => false
-            ));
+        ));
     });
 
     //Get Show Bar Tokens
@@ -263,34 +300,32 @@
         ));
     });
 
-
     //Get Show Menu Items
 
     $app->get("/show_menu_items/{id}", function($id) use($app) {
         $bar = Bar::find($id);
         $items = $bar->getAllItems();
         return $app['twig']->render("bar.html.twig", array(
-        'bar' => $bar,
-        'tokens' => $bar->getAllTokens(),
-        'items' => $bar->getAllItems(),
-        'get_tokens' => false,
-        'show_menu' => true,
-        'edit_bar' => false
+            'bar' => $bar,
+            'tokens' => $bar->getAllTokens(),
+            'items' => $bar->getAllItems(),
+            'get_tokens' => false,
+            'show_menu' => true,
+            'edit_bar' => false
         ));
     });
-
 
     $app->patch("/edit_item/{bar_id}/{item_id}", function($bar_id, $item_id) use($app) {
         $item = Item::find($item_id);
         $item->update($_POST['description'], $_POST['cost']);
         $bar = Bar::find($bar_id);
         return $app['twig']->render("bar.html.twig", array(
-        'bar' => $bar,
-        'tokens' => $bar->getAllTokens(),
-        'items' => $bar->getAllItems(),
-        'get_tokens' => false,
-        'show_menu' => true,
-        'edit_bar' => false
+            'bar' => $bar,
+            'tokens' => $bar->getAllTokens(),
+            'items' => $bar->getAllItems(),
+            'get_tokens' => false,
+            'show_menu' => true,
+            'edit_bar' => false
         ));
     });
 
@@ -300,13 +335,13 @@
         $item->save();
         $bar->addItem($item);
         return $app['twig']->render("bar.html.twig", array(
-        'item' => $item,
-        'bar' => $bar,
-        'tokens' => $bar->getAllTokens(),
-        'items' => $bar->getAllItems(),
-        'get_tokens' => false,
-        'show_menu' => true,
-        'edit_bar' => false
+            'item' => $item,
+            'bar' => $bar,
+            'tokens' => $bar->getAllTokens(),
+            'items' => $bar->getAllItems(),
+            'get_tokens' => false,
+            'show_menu' => true,
+            'edit_bar' => false
         ));
     });
 
@@ -315,13 +350,13 @@
         $item = Item::find($item_id);
         $item->delete();
         return $app['twig']->render("bar.html.twig", array(
-        'item' => $item,
-        'bar' => $bar,
-        'tokens' => $bar->getAllTokens(),
-        'items' => $bar->getAllItems(),
-        'get_tokens' => false,
-        'show_menu' => true,
-        'edit_bar' => false
+            'item' => $item,
+            'bar' => $bar,
+            'tokens' => $bar->getAllTokens(),
+            'items' => $bar->getAllItems(),
+            'get_tokens' => false,
+            'show_menu' => true,
+            'edit_bar' => false
         ));
     });
 
@@ -330,16 +365,15 @@
         $item = Item::find($item_id);
         $item->delete();
         return $app['twig']->render("bar.html.twig", array(
-        'item' => $item,
-        'bar' => $bar,
-        'tokens' => $bar->getAllTokens(),
-        'items' => $bar->getAllItems(),
-        'get_tokens' => false,
-        'show_menu' => true,
-        'edit_bar' => false
+            'item' => $item,
+            'bar' => $bar,
+            'tokens' => $bar->getAllTokens(),
+            'items' => $bar->getAllItems(),
+            'get_tokens' => false,
+            'show_menu' => true,
+            'edit_bar' => false
         ));
     });
-
 
     //Get Show Bar Edit
 
@@ -385,7 +419,7 @@
                 'send_token' => true,
                 'token_form' => false,
                 'edit_user' => false
-                ));
+            ));
         }
     });
 
@@ -465,7 +499,7 @@
             'send_token' => false,
             'token_form' => false,
             'edit_user' => false
-            ));
+        ));
     });
 
     //Post Calls ====================================================
@@ -485,7 +519,7 @@
             'send_token' => false,
             'token_form' => false,
             'edit_user' => false
-            ));
+        ));
     });
 
     //Post Select Bar {id}/{friend_id}
@@ -543,7 +577,9 @@
         $mail->AltBody = 'You received a token!  Log in to your account to view your token.';
         $mail->send();
 
-        return $app['twig']->render("token_confirmation.html.twig", array('user' => $user, 'friend' => $friend
+        return $app['twig']->render("token_confirmation.html.twig", array(
+            'user' => $user, 
+            'friend' => $friend
         ));
     });
 
@@ -552,67 +588,15 @@
         $user = Patron::find($id);
         $all_bars = Bar::getAll();
         return $app['twig']->render("patron.html.twig", array(
-        'user' => $user,
-        'user_tokens' => $user->getTokens(),
-        'all_bars' => $all_bars,
-        'preferred_bars' => false,
-        'send_token' => false,
-        'token_form' => false,
-        'edit_user' => false
-    ));
+            'user' => $user,
+            'user_tokens' => $user->getTokens(),
+            'all_bars' => $all_bars,
+            'preferred_bars' => false,
+            'send_token' => false,
+            'token_form' => false,
+            'edit_user' => false
+         ));
     });
-
-    // $app->post("/add_token/{id}/{friend_id}/{bar_id}", function($id, $friend_id, $bar_id) use($app) {
-    //     $user = Patron::find($id);
-    //     $friend = Patron::find($friend_id);
-    //     $friend_bars = $friend->getPreferredBars();
-    //     $selected_bar = Bar::find($bar_id);
-    //     $item_id = $_POST['item_id'];
-    //     $item = Item::find($item_id);
-    //     $menu_id = $selected_bar->getMenuId($item);
-    //     $new_token = new Token($friend_id, $menu_id, $id);
-    //     // var_dump($new_token);
-    //     $shopping_cart = [$_POST['shopping_cart']];
-    //     // $shopping_cart = array();
-    //     // var_dump($shopping_cart);
-    //     array_push($shopping_cart, $new_token);
-    //     var_dump($shopping_cart);
-    //     // if ($shopping_cart != array()) {
-    //     //     $shopping_cart = array_push($shopping_cart, $new_token);
-    //     // } else {
-    //     //     $shopping_cart = array();
-    //     //     $shopping_cart = array_push($shopping_cart, $new_token);
-    //     // }
-    //
-    //
-    //     // $item = $selected_bar->getItem($menu_id);
-    //     $displayed_cart = array($_POST['displayed_cart']);
-    //     $displayed_cart = array_push($displayed_cart, $item);
-    //
-    //     return $app['twig']->render("send_token.html.twig", array(
-    //         'user' => $user,
-    //         'friend' => $friend,
-    //         'friend_bars' => $friend_bars,
-    //         'selected_bar' => $selected_bar,
-    //         'shopping_cart' => $shopping_cart,
-    //         'displayed_cart' => $displayed_cart
-    //     ));
-    // });
-    //
-    // $app->post("submit_token/{id}/{friend_id}", function ($id, $friend_id) use ($app) {
-    //     $user = Patron::find($id);
-    //     $friend = Patron::find($friend_id);
-    //     $shopping_cart = $_POST['current_shopping_cart'];
-    //     foreach($shopping_cart as $token) {
-    //         $patron_id = $token['patron_id'];
-    //         $menu_id = $token['menu_id'];
-    //         $sender_id = $token['sender_id'];
-    //         $new_token = new Token($patron_id, $menu_id, $sender_id);
-    //         $new_token->save();
-    //     }
-    //     return $app['twig']->render("token_confirmation.html.twig", array('user' => $user, 'friend' => $friend));
-    // });
-
 
     return $app;
 ?>
